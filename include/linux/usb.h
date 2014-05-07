@@ -615,6 +615,7 @@ extern int usb_lock_device_for_reset(struct usb_device *udev,
 
 /* USB port reset for device reinitialization */
 extern int usb_reset_device(struct usb_device *dev);
+extern int usb_logical_reconnect_device(struct usb_device *udev);
 extern void usb_queue_reset_device(struct usb_interface *dev);
 
 #ifdef CONFIG_ACPI

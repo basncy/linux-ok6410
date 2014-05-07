@@ -5352,6 +5352,24 @@ int usb_reset_device(struct usb_device *udev)
 }
 EXPORT_SYMBOL_GPL(usb_reset_device);
 
+/* logical disconnect and renumurate device */
+int usb_logical_reconnect_device(struct usb_device *udev)
+{
+	struct usb_device *parent_hdev = udev->parent;
+	struct usb_hub *parent_hub;
+
+	if (udev->state == USB_STATE_NOTATTACHED) {
+		dev_dbg(&udev->dev, "usb device is not attached\n");
+		return -EINVAL;
+	}
+	if (!parent_hdev)
+		return -EISDIR;
+
+	parent_hub = usb_hub_to_struct_hub(parent_hdev);
+	hub_port_logical_disconnect(parent_hub, udev->portnum);
+	return 0;
+}
+EXPORT_SYMBOL_GPL(usb_logical_reconnect_device);
 
 /**
  * usb_queue_reset_device - Reset a USB device from an atomic context

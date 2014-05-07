@@ -681,6 +681,23 @@ static ssize_t remove_store(struct device *dev, struct device_attribute *attr,
 }
 static DEVICE_ATTR_IGNORE_LOCKDEP(remove, S_IWUSR, NULL, remove_store);
 
+/*
+ * logical disconnect and renumurate device, to simulate
+ * unpluging and pluging operation.
+ */
+static ssize_t usb_reconncect_store(struct device *dev,
+		struct device_attribute *attr,
+		const char *buf, size_t count)
+{
+	int rc = 0;
+
+	rc = usb_logical_reconnect_device(to_usb_device(dev));
+	if (rc == 0)
+		return count;
+	else
+		return rc;
+}
+static DEVICE_ATTR_IGNORE_LOCKDEP(reconncect, 0200, NULL, usb_reconncect_store);
 
 static struct attribute *dev_attrs[] = {
 	/* current configuration's attributes */
@@ -709,6 +726,7 @@ static struct attribute *dev_attrs[] = {
 	&dev_attr_avoid_reset_quirk.attr,
 	&dev_attr_authorized.attr,
 	&dev_attr_remove.attr,
+	&dev_attr_reconncect.attr,
 	&dev_attr_removable.attr,
 	&dev_attr_ltm_capable.attr,
 	NULL,
